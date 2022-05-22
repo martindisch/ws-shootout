@@ -4,7 +4,7 @@ use tokio_tungstenite::tungstenite::Message;
 
 #[tokio::main]
 async fn main() {
-    let subscriber_count = 5;
+    let subscriber_count = 30_000;
     let address = "ws://127.0.0.1:8080";
 
     let join_handles: Vec<_> = (0..subscriber_count)
@@ -18,7 +18,5 @@ async fn main() {
 async fn subscribe(address: &str) {
     let (mut socket, _) = tokio_tungstenite::connect_async(address).await.unwrap();
 
-    while let Some(Ok(Message::Text(text))) = socket.next().await {
-        println!("{}", text);
-    }
+    while let Some(Ok(Message::Text(_))) = socket.next().await {}
 }
