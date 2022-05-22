@@ -15,7 +15,8 @@ async fn main() {
 }
 
 async fn subscribe(address: &str) {
-    let (mut socket, _) = tokio_tungstenite::connect_async(address).await.unwrap();
+    let (mut socket, _) =
+        tokio_tungstenite::connect_async(address).await.unwrap();
 
     while let Some(Ok(Message::Text(_))) = socket.next().await {}
 }
