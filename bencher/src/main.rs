@@ -1,5 +1,4 @@
-use futures_util::future;
-use futures_util::stream::StreamExt;
+use futures_util::{future, stream::StreamExt};
 use tokio_tungstenite::tungstenite::Message;
 
 #[tokio::main]
