@@ -11,9 +11,12 @@ wss.on("connection", (ws) => {
 });
 
 const periodicUpdate = () => {
-  const date = new Date().toString();
-  console.log(`Sending date to ${clients.size} clients`);
-  clients.forEach((ws) => ws.send(date));
+  const date = new Date();
+  const fullDate = date.toString();
+  const time = date.toLocaleTimeString("de-CH");
+
+  console.log(`[${time}] Sending date to ${clients.size} clients`);
+  clients.forEach((ws) => ws.send(fullDate));
 
   setTimeout(periodicUpdate, 1000);
 };
