@@ -19,7 +19,7 @@ source.
 ## Running with Docker
 
 In just one command you can scale the number of bencher instances:
-`docker compose up --build --scale bencher=6`
+`docker compose up --build --scale bencher=16`
 
 ## License
 

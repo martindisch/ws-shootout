@@ -1,6 +1,8 @@
 use dotenv::dotenv;
 use futures_util::{future, stream::StreamExt};
-use std::env;
+use rand::{thread_rng, Rng};
+use std::{env, time::Duration};
+use tokio::time;
 use tokio_tungstenite::tungstenite::Message;
 
 #[tokio::main]
@@ -23,6 +25,10 @@ async fn main() {
 }
 
 async fn subscribe(address: &str) {
+    // Wait for some amount of time to prevent everybody connecting all at once
+    let delay_secs = thread_rng().gen_range(1..=30);
+    time::sleep(Duration::from_secs(delay_secs)).await;
+
     let (mut socket, _) =
         tokio_tungstenite::connect_async(address).await.unwrap();
 
