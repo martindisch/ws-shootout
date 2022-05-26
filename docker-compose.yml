@@ -8,3 +8,5 @@ services:
       - SERVER=with-tungstenite:8080
     depends_on:
       - with-tungstenite
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 60999
