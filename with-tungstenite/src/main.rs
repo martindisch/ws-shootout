@@ -13,7 +13,7 @@ async fn main() {
     let (tx, _) = broadcast::channel(8);
     tokio::spawn(publish(tx.clone()));
 
-    let listener = TcpListener::bind("127.0.0.1:8080").await.unwrap();
+    let listener = TcpListener::bind("0.0.0.0:8080").await.unwrap();
 
     while let Ok((stream, _)) = listener.accept().await {
         let ws_stream = tokio_tungstenite::accept_async(stream).await.unwrap();
