@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  with-tungstenite:
+    build: ./with-tungstenite
+  bencher:
+    build: ./bencher
+    environment:
+      - SERVER=with-tungstenite:8080
+    depends_on:
+      - with-tungstenite
