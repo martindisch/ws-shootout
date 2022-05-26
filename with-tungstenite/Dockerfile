@@ -17,7 +17,6 @@ RUN sleep 1 && touch src/main.rs && cargo build --release
 
 # Final image -----------------------------------------------------------------
 FROM debian:11-slim
-ENV RUST_BACKTRACE=1
 COPY --from=builder \
   /usr/src/with-tungstenite/target/release/with-tungstenite \
   /usr/local/bin/with-tungstenite
