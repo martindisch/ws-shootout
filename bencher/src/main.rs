@@ -8,7 +8,7 @@ async fn main() {
     dotenv().ok();
     let server = env::var("SERVER").expect("SERVER is not set");
 
-    let subscriber_count = 59_000;
+    let subscriber_count = 10_000;
     let address = format!("ws://{server}");
 
     let join_handles: Vec<_> = (0..subscriber_count)
