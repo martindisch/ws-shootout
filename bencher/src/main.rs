@@ -1,14 +1,22 @@
+use dotenv::dotenv;
 use futures_util::{future, stream::StreamExt};
+use std::env;
 use tokio_tungstenite::tungstenite::Message;
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
+    let server = env::var("SERVER").expect("SERVER is not set");
+
     let subscriber_count = 59_000;
-    let address = "ws://127.0.0.1:8080";
+    let address = format!("ws://{server}");
 
     let join_handles: Vec<_> = (0..subscriber_count)
         .into_iter()
-        .map(|_| tokio::spawn(subscribe(address)))
+        .map(|_| {
+            let address = address.clone();
+            tokio::spawn(async move { subscribe(&address).await })
+        })
         .collect();
 
     future::join_all(join_handles).await;

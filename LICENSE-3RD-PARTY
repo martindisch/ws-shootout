@@ -3,6 +3,7 @@ The MIT License
 
 applies to:
 - chrono, Copyright (c) 2014--2017, Kang Seonghoon and contributors
+- dotenv, Copyright (c) 2014 Santiago Lapresta and contributors
 - futures_util, Copyright (c) 2016 Alex Crichton
                 Copyright (c) 2017 The Tokio Authors
 - tokio, Copyright (c) 2022 Tokio Contributors
