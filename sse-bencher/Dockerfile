@@ -17,6 +17,8 @@ RUN sleep 1 && touch src/main.rs && cargo build --release
 
 # Final image -----------------------------------------------------------------
 FROM debian:11-slim
+RUN apt-get update && apt-get install -y ca-certificates
+RUN update-ca-certificates
 COPY --from=builder \
   /usr/src/sse-bencher/target/release/sse-bencher \
   /usr/local/bin/sse-bencher
