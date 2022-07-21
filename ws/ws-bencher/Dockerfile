@@ -1,6 +1,6 @@
 # Builder ---------------------------------------------------------------------
 FROM rust:1.61-slim AS builder
-WORKDIR /usr/src/bencher
+WORKDIR /usr/src/ws-bencher
 
 # Stage 1: install & compile dependencies (only runs when dependencies changed)
 RUN cargo init
@@ -18,6 +18,6 @@ RUN sleep 1 && touch src/main.rs && cargo build --release
 # Final image -----------------------------------------------------------------
 FROM debian:11-slim
 COPY --from=builder \
-  /usr/src/bencher/target/release/bencher \
-  /usr/local/bin/bencher
-CMD ["bencher"]
+  /usr/src/ws-bencher/target/release/ws-bencher \
+  /usr/local/bin/ws-bencher
+CMD ["ws-bencher"]

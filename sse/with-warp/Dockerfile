@@ -1,6 +1,6 @@
 # Builder ---------------------------------------------------------------------
 FROM rust:1.61-slim AS builder
-WORKDIR /usr/src/sse-with-rocket
+WORKDIR /usr/src/with-warp
 
 # Stage 1: install & compile dependencies (only runs when dependencies changed)
 RUN cargo init
@@ -18,9 +18,6 @@ RUN sleep 1 && touch src/main.rs && cargo build --release
 # Final image -----------------------------------------------------------------
 FROM debian:11-slim
 COPY --from=builder \
-  /usr/src/sse-with-rocket/target/release/sse-with-rocket \
-  /usr/local/bin
-COPY --from=builder \
-  /usr/src/sse-with-rocket/Rocket.toml \
-  .
-CMD ["sse-with-rocket"]
+  /usr/src/with-warp/target/release/with-warp \
+  /usr/local/bin/with-warp
+CMD ["with-warp"]

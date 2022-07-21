@@ -1,5 +1,5 @@
 [package]
-name = "bencher"
+name = "ws-bencher"
 version = "0.1.0"
 edition = "2021"
 
