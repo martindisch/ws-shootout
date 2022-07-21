@@ -1,12 +1,12 @@
 version: "3.9"
 services:
-  sse-with-rocket:
-    build: ./sse-with-rocket
+  sse-with-warp:
+    build: ./sse-with-warp
   sse-bencher:
     build: ./sse-bencher
     environment:
-      - SERVER=sse-with-rocket:8080
+      - SERVER=sse-with-warp:8080
     depends_on:
-      - sse-with-rocket
+      - sse-with-warp
     sysctls:
       - net.ipv4.ip_local_port_range=1024 60999
