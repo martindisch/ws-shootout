@@ -19,5 +19,8 @@ RUN sleep 1 && touch src/main.rs && cargo build --release
 FROM debian:11-slim
 COPY --from=builder \
   /usr/src/sse-with-rocket/target/release/sse-with-rocket \
-  /usr/local/bin/sse-with-rocket
+  /usr/local/bin
+COPY --from=builder \
+  /usr/src/sse-with-rocket/Rocket.toml \
+  .
 CMD ["sse-with-rocket"]
