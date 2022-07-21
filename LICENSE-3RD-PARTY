@@ -9,8 +9,10 @@ applies to:
 - rand, Copyright 2018 Developers of the Rand project
         Copyright (c) 2014 The Rust Project Developers
 - tokio, Copyright (c) 2022 Tokio Contributors
+- tokio-stream, Copyright (c) 2022 Tokio Contributors
 - tokio-tungstenite, Copyright (c) 2017 Daniel Abramov
                      Copyright (c) 2017 Alexey Galakhov
+- warp, Copyright (c) 2018-2020 Sean McArthur
 - ws, Copyright (c) 2011 Einar Otto Stangvik <einaros@gmail.com>
 -------------------------------------------------------------------------------
 Permission is hereby granted, free of charge, to any person obtaining a copy
