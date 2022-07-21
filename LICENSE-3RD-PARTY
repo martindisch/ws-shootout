@@ -38,6 +38,7 @@ The Apache License
 
 applies to:
 - chrono
+- eventsource-client
 - futures_util
 - rand
 -------------------------------------------------------------------------------
