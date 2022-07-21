@@ -8,6 +8,7 @@ applies to:
                 Copyright (c) 2017 The Tokio Authors
 - rand, Copyright 2018 Developers of the Rand project
         Copyright (c) 2014 The Rust Project Developers
+- rocket, Copyright (c) 2016 Sergio Benitez
 - tokio, Copyright (c) 2022 Tokio Contributors
 - tokio-stream, Copyright (c) 2022 Tokio Contributors
 - tokio-tungstenite, Copyright (c) 2017 Daniel Abramov
@@ -41,6 +42,7 @@ applies to:
 - eventsource-client
 - futures_util
 - rand
+- rocket
 -------------------------------------------------------------------------------
                                  Apache License
                            Version 2.0, January 2004
