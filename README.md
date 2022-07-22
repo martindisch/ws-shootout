@@ -22,6 +22,31 @@ Change into either the `ws` or `sse` directory, then you can scale the number
 of bencher instances with a single command such as:
 `docker compose up --build --scale sse-bencher=16`
 
+## Unscientific results
+
+### Over local network
+
+Using a laptop from 2014 as server and one beefy desktop as client.
+
+- 17'000 concurrent connections using plain TCP
+- 17'000 concurrent connections using SSE (warp)
+- 17'000 concurrent connections using SSE (rocket)
+- 15'000 concurrent connections using WS (ws)
+- 2300 concurrent connections using WS (tungstenite)
+
+### On device
+
+Running one server and several clients (10'000 connections each) tied together
+with docker compose yields much better results of course, since no packet has
+to hit a physical interface. The main problem seems to be that Docker's
+internal name resolution starts to fail, which was the abort point for these
+experiments.
+
+- 260'000 concurrent connections using plain TCP
+- 200'000 concurrent connections using SSE (warp) before memory usage becomes
+  prohibitive
+- 260'000 concurrent connections using WS (tungstenite)
+
 ## License
 
 Licensed under either of
