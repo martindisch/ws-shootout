@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  with-tokio:
+    build: ./with-tokio
+  tcp-bencher:
+    build: ./tcp-bencher
+    environment:
+      - SERVER=with-tokio:8080
+    depends_on:
+      - with-tokio
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 60999
