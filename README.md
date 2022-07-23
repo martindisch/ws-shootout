@@ -39,12 +39,13 @@ Using a laptop from 2014 as server and one beefy desktop as client.
 Running one server and several clients (10'000 connections each) tied together
 with docker compose yields much better results of course, since no packet has
 to hit a physical interface. The main problem seems to be that Docker's
-internal name resolution starts to fail, which was the abort point for these
-experiments.
+internal name resolution starts to buckle under the load when too many
+connections are opened at a time, so they have to be spaced out over some
+period. After that we're hitting a limit around the magic number 2^18 (262144),
+so this benchmark isn't really useful to compare the implementations.
 
 - 260'000 concurrent connections using plain TCP
-- 200'000 concurrent connections using SSE (warp) before memory usage becomes
-  prohibitive
+- 260'000 concurrent connections using SSE (warp)
 - 260'000 concurrent connections using WS (tungstenite)
 
 ## License
