@@ -23,7 +23,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapServerSentEvents("/sse");
-app.MapControllers();
+app.MapServerSentEvents("/");
 
 app.Run();
