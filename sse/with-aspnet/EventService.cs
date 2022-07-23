@@ -1,12 +1,14 @@
+using Lib.AspNetCore.ServerSentEvents;
+
 namespace WithAspNet;
 
 public class EventService : BackgroundService
 {
-    private readonly ILogger<EventService> logger;
+    private readonly IServerSentEventsService _serverSentEventsService;
 
-    public EventService(ILogger<EventService> logger)
+    public EventService(IServerSentEventsService serverSentEventsService)
     {
-        this.logger = logger;
+        _serverSentEventsService = serverSentEventsService;
     }
 
     public override async Task StopAsync(CancellationToken cancellationToken)
@@ -22,7 +24,7 @@ public class EventService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            logger.LogInformation("Got executed");
+            await _serverSentEventsService.SendEventAsync("myello", stoppingToken);
             await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
         }
     }
