@@ -11,15 +11,6 @@ public class EventService : BackgroundService
         _serverSentEventsService = serverSentEventsService;
     }
 
-    public override async Task StopAsync(CancellationToken cancellationToken)
-    {
-        // Signal cancellation to the executing method & wait until it completes or the stop token triggers
-        await base.StopAsync(cancellationToken);
-
-        // Throw if cancellation was triggered (shutdown is no longer graceful)
-        cancellationToken.ThrowIfCancellationRequested();
-    }
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
