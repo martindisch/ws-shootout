@@ -1,4 +1,5 @@
 using Lib.AspNetCore.ServerSentEvents;
+using WithAspNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHostedService<EventService>();
 builder.Services.AddServerSentEvents();
 
 var app = builder.Build();
