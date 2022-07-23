@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="Lib.AspNetCore.ServerSentEvents" Version="8.1.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
 </Project>
