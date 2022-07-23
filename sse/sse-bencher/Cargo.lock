@@ -667,6 +667,7 @@ dependencies = [
  "dotenv",
  "eventsource-client",
  "futures-util",
+ "hyper",
  "rand",
  "tokio",
 ]

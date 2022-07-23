@@ -4,6 +4,7 @@ use futures_util::{
     future,
     stream::{Stream, TryStreamExt},
 };
+use hyper::client::{Client, HttpConnector};
 use rand::{thread_rng, Rng};
 use std::{env, time::Duration};
 use tokio::time;
@@ -16,33 +17,28 @@ async fn main() {
     let subscriber_count = 10_000;
     let address = format!("http://{server}");
 
+    let shared_client = Client::new();
+
     let join_handles: Vec<_> = (0..subscriber_count)
         .into_iter()
         .map(|_| {
+            let client = shared_client.clone();
             let address = address.clone();
-            tokio::spawn(async move { subscribe(&address).await })
+            tokio::spawn(async move { subscribe(client, &address).await })
         })
         .collect();
 
     future::join_all(join_handles).await;
 }
 
-async fn subscribe(address: &str) {
+async fn subscribe(client: Client<HttpConnector>, address: &str) {
     // Wait for some amount of time to prevent everybody connecting all at once
     let delay_secs = thread_rng().gen_range(1..=30);
     time::sleep(Duration::from_secs(delay_secs)).await;
 
     let client = es::ClientBuilder::for_url(address)
         .unwrap()
-        // .reconnect(
-        //     es::ReconnectOptions::reconnect(true)
-        //         .retry_initial(false)
-        //         .delay(Duration::from_secs(1))
-        //         .backoff_factor(2)
-        //         .delay_max(Duration::from_secs(60))
-        //         .build(),
-        // )
-        .build();
+        .build_with_http_client(client);
 
     let mut stream = tail_events(client);
 
