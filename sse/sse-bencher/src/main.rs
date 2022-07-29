@@ -14,7 +14,7 @@ async fn main() {
     dotenv().ok();
     let server = env::var("SERVER").expect("SERVER is not set");
 
-    let subscriber_count = 10_000;
+    let subscriber_count = 60_000;
     let address = format!("http://{server}");
 
     let shared_client = Client::new();
