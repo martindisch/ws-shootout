@@ -33,6 +33,16 @@ connections), regardless of the implementation. They do differ in the amount of
 resources consumed, but not enough to definitively exclude any one as
 inadequate.
 
+Luckily I found an [excellent
+talk](https://github.com/eranyanay/1m-go-websockets) by Eran Yanay and learned
+that 262144 is the limit of the conntrack table, which can be increased with
+`echo 4000000 | sudo tee -a /proc/sys/net/netfilter/nf_conntrack_max`.
+
+After that I ditched Docker and worked around the ephemeral port problem by
+giving each client a different loopback address to connect to (e.g. 127.0.0.2).
+With this I comfortably got up to 450'000 connections using the SSE warp
+solution.
+
 ## License
 
 Licensed under either of
