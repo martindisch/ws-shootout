@@ -18,9 +18,6 @@ fn main() {
 }
 
 async fn serve() {
-    let id = executor().id();
-    println!("Executor {id} starting");
-
     let streams = Rc::new(RefCell::new(Vec::new()));
     let listen_copy = Rc::clone(&streams);
     let push_copy = Rc::clone(&streams);
@@ -33,13 +30,10 @@ async fn serve() {
 }
 
 async fn listen(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
-    let id = executor().id();
-
     let listener = TcpListener::bind("0.0.0.0:8080").unwrap();
     while let Ok(stream) = listener.accept().await {
         let mut streams = streams.borrow_mut();
         streams.push(Some(stream));
-        println!("Accepted new stream from executor {id}");
     }
 }
 
@@ -47,6 +41,7 @@ async fn push(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
     loop {
         {
             let mut streams = streams.borrow_mut();
+            let mut active_streams = 0;
 
             for i in 0..streams.len() {
                 if let Some(stream) = &mut streams[i] {
@@ -56,9 +51,17 @@ async fn push(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
                         .is_err()
                     {
                         streams[i] = None;
+                    } else {
+                        active_streams += 1;
                     }
                 }
             }
+
+            println!(
+                "Executor {} sent to {} clients",
+                executor().id(),
+                active_streams
+            );
         }
 
         timer::sleep(Duration::from_secs(1)).await;
