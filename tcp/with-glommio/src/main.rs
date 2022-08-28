@@ -7,10 +7,12 @@ use glommio::{
 use std::{cell::RefCell, rc::Rc, time::Duration};
 
 fn main() {
-    let handles =
-        LocalExecutorPoolBuilder::new(PoolPlacement::MaxSpread(2, None))
-            .on_all_shards(serve)
-            .unwrap();
+    let handles = LocalExecutorPoolBuilder::new(PoolPlacement::MaxSpread(
+        num_cpus::get_physical(),
+        None,
+    ))
+    .on_all_shards(serve)
+    .unwrap();
 
     handles.join_all();
 }
