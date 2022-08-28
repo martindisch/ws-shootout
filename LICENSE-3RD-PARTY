@@ -6,7 +6,9 @@ applies to:
 - dotenv, Copyright (c) 2014 Santiago Lapresta and contributors
 - futures_util, Copyright (c) 2016 Alex Crichton
                 Copyright (c) 2017 The Tokio Authors
+- glommio
 - hyper, Copyright (c) 2014-2021 Sean McArthur
+- num_cpus, Copyright (c) 2015
 - rand, Copyright 2018 Developers of the Rand project
         Copyright (c) 2014 The Rust Project Developers
 - rocket, Copyright (c) 2016 Sergio Benitez
@@ -42,6 +44,8 @@ applies to:
 - chrono
 - eventsource-client
 - futures_util
+- glommio
+- num_cpus
 - rand
 - rocket
 -------------------------------------------------------------------------------

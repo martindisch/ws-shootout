@@ -1,0 +1,8 @@
+[package]
+name = "with-glommio"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+glommio = "0.7.0"
+num_cpus = "1.13.1"
