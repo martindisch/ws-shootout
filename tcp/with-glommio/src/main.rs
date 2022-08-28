@@ -30,28 +30,31 @@ async fn serve() {
     push_task.await;
 }
 
-async fn listen(streams: Rc<RefCell<Vec<TcpStream>>>) {
+async fn listen(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
     let id = executor().id();
 
     let listener = TcpListener::bind("0.0.0.0:8080").unwrap();
     while let Ok(stream) = listener.accept().await {
         let mut streams = streams.borrow_mut();
-        streams.push(stream);
+        streams.push(Some(stream));
         println!("Accepted new stream from executor {id}");
     }
 }
 
-async fn push(streams: Rc<RefCell<Vec<TcpStream>>>) {
+async fn push(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
     loop {
         {
             let mut streams = streams.borrow_mut();
-            for stream in streams.iter_mut() {
-                if stream
-                    .write_all("Hello, world!\n".as_bytes())
-                    .await
-                    .is_err()
-                {
-                    return;
+
+            for i in 0..streams.len() {
+                if let Some(stream) = &mut streams[i] {
+                    if stream
+                        .write_all("Hello, world!\n".as_bytes())
+                        .await
+                        .is_err()
+                    {
+                        streams[i] = None;
+                    }
                 }
             }
         }
