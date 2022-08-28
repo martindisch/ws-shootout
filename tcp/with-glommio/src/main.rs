@@ -1,18 +1,16 @@
-use futures_lite::{future, AsyncWriteExt};
+use futures_lite::AsyncWriteExt;
 use glommio::{
     executor,
     net::{TcpListener, TcpStream},
-    timer, Latency, LocalExecutorPoolBuilder, PoolPlacement, Shares,
+    timer, LocalExecutorPoolBuilder, PoolPlacement,
 };
 use std::{cell::RefCell, rc::Rc, time::Duration};
 
 fn main() {
-    let handles = LocalExecutorPoolBuilder::new(PoolPlacement::MaxSpread(
-        num_cpus::get_physical(),
-        None,
-    ))
-    .on_all_shards(serve)
-    .unwrap();
+    let handles =
+        LocalExecutorPoolBuilder::new(PoolPlacement::MaxSpread(2, None))
+            .on_all_shards(serve)
+            .unwrap();
 
     handles.join_all();
 }
@@ -25,23 +23,11 @@ async fn serve() {
     let listen_copy = Rc::clone(&streams);
     let push_copy = Rc::clone(&streams);
 
-    let listen_queue = executor().create_task_queue(
-        Shares::Static(1),
-        Latency::NotImportant,
-        "listen",
-    );
-    let push_queue = executor().create_task_queue(
-        Shares::Static(1),
-        Latency::NotImportant,
-        "push",
-    );
+    let listen_task = glommio::spawn_local(listen(listen_copy));
+    let push_task = glommio::spawn_local(push(push_copy));
 
-    let listen_task =
-        glommio::spawn_local_into(listen(listen_copy), listen_queue).unwrap();
-    let push_task =
-        glommio::spawn_local_into(push(push_copy), push_queue).unwrap();
-
-    future::zip(listen_task, push_task).await;
+    listen_task.await;
+    push_task.await;
 }
 
 async fn listen(streams: Rc<RefCell<Vec<TcpStream>>>) {
