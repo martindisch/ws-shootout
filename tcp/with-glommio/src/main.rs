@@ -18,59 +18,40 @@ fn main() {
 }
 
 async fn serve() {
-    let streams = Rc::new(RefCell::new(Vec::new()));
-    let listen_copy = Rc::clone(&streams);
-    let push_copy = Rc::clone(&streams);
-
-    let listen_task = glommio::spawn_local(listen(listen_copy));
-    let push_task = glommio::spawn_local(push(push_copy));
-
-    listen_task.await;
-    push_task.await;
-}
-
-async fn listen(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
     let listener = TcpListener::bind("0.0.0.0:8080").unwrap();
+    let stream_count = Rc::new(RefCell::new(0));
+
+    glommio::spawn_local(counter(Rc::clone(&stream_count))).detach();
+
     while let Ok(stream) = listener.accept().await {
-        let mut streams = streams.borrow_mut();
-        streams.push(Some(stream));
+        *stream_count.borrow_mut() += 1;
+        glommio::spawn_local(handle(stream, Rc::clone(&stream_count)))
+            .detach();
     }
 }
 
-async fn push(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
+async fn handle(mut stream: TcpStream, stream_count: Rc<RefCell<usize>>) {
     loop {
+        if stream
+            .write_all("Hello, world!\n".as_bytes())
+            .await
+            .is_err()
         {
-            let streams_len = streams.borrow().len();
-            let mut active_streams = 0;
-
-            for i in 0..streams_len {
-                if streams.borrow()[i].is_some() {
-                    active_streams += 1;
-
-                    let streams_copy = Rc::clone(&streams);
-                    glommio::spawn_local(async move {
-                        let mut streams = streams_copy.borrow_mut();
-
-                        if let Some(stream) = &mut streams[i] {
-                            if stream
-                                .write_all("Hello, world!\n".as_bytes())
-                                .await
-                                .is_err()
-                            {
-                                streams[i] = None;
-                            }
-                        }
-                    })
-                    .detach();
-                }
-            }
-
-            println!(
-                "Executor {} sent to {} clients",
-                executor().id(),
-                active_streams
-            );
+            *stream_count.borrow_mut() -= 1;
+            return;
         }
+
+        timer::sleep(Duration::from_secs(1)).await;
+    }
+}
+
+async fn counter(stream_count: Rc<RefCell<usize>>) {
+    loop {
+        println!(
+            "Executor {} sent to {} clients",
+            executor().id(),
+            stream_count.as_ref().borrow()
+        );
 
         timer::sleep(Duration::from_secs(1)).await;
     }
