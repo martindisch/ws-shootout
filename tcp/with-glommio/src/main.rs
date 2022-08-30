@@ -40,20 +40,28 @@ async fn listen(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
 async fn push(streams: Rc<RefCell<Vec<Option<TcpStream>>>>) {
     loop {
         {
-            let mut streams = streams.borrow_mut();
+            let streams_len = streams.borrow().len();
             let mut active_streams = 0;
 
-            for i in 0..streams.len() {
-                if let Some(stream) = &mut streams[i] {
-                    if stream
-                        .write_all("Hello, world!\n".as_bytes())
-                        .await
-                        .is_err()
-                    {
-                        streams[i] = None;
-                    } else {
-                        active_streams += 1;
-                    }
+            for i in 0..streams_len {
+                if streams.borrow()[i].is_some() {
+                    active_streams += 1;
+
+                    let streams_copy = Rc::clone(&streams);
+                    glommio::spawn_local(async move {
+                        let mut streams = streams_copy.borrow_mut();
+
+                        if let Some(stream) = &mut streams[i] {
+                            if stream
+                                .write_all("Hello, world!\n".as_bytes())
+                                .await
+                                .is_err()
+                            {
+                                streams[i] = None;
+                            }
+                        }
+                    })
+                    .detach();
                 }
             }
 
